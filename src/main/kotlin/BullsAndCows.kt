@@ -1,8 +1,8 @@
 package org.example
 
 class StartGame() {
-    var a = 1
-    val array = Array<String>(50) { ' '.toString() }
+    private var a = 1
+    private val array = Array<String>(50) { ' '.toString() }
 
     fun getMenu(): Int {
         println()
@@ -37,7 +37,7 @@ class StartGame() {
         return answer
     }
 
-    fun startGame(): Any {
+    private fun startGame(): Any {
         var i = 1
         val answer = randomInt()
         println()
@@ -87,7 +87,7 @@ class StartGame() {
                 }
             }
         }
-        // println(array.contentToString())
+
         while (true) {
             println()
             println("게임을 계속 할까요? ('1' : Yes / '2' : No - 기록 보기)")

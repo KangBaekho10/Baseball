@@ -1,6 +1,5 @@
 package org.example
 
-
 fun main() {
     var isValid = false
 
@@ -14,8 +13,7 @@ fun main() {
     }
 }
 
-
-    fun endGame() {
-        println("< 숫자 야구 게임을 종료합니다 >")
-        return
-    }
+fun endGame() {
+    println("< 숫자 야구 게임을 종료합니다 >")
+    return
+}
