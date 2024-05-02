@@ -51,7 +51,7 @@ class StartGame() {
             print(": ")
             val inputAnswer = readln().toList()
             if (inputAnswer.size > 3) {
-                println("올바른 숫자를 입력해주세요!")
+                println("올바르지 않은 입력값입니다")
                 i--
                 continue
             }
@@ -84,6 +84,7 @@ class StartGame() {
                     println("정답은? : $correctAnswer")
                     array[a] = "$i"
                     a++
+                    break
                 }
             }
         }
