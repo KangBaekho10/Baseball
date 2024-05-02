@@ -16,7 +16,7 @@ class StartGame() {
             2 -> endGame()
         }
 
-        if (userInput < 1 || userInput > 3) {
+        if (userInput < 1 || userInput > 2) {
             println("올바른 숫자를 입력해주세요!")
             return getMenu()
         }
