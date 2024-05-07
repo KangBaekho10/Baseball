@@ -13,7 +13,7 @@
   > - 힌트는 다음과 같습니다.
 >   - 같은 자리에 같은 숫자가 있는 경우 '스트라이크 (Strike)'
 >   - 다른 자리에 같은 숫자가 있는 경우 '볼 (Ball)'
->   - 같은 숫자가 전혀 없는 경우 '아웃 (Out)'
+>   - 같은 숫자가 전혀 없는 경우 'Noting (Noting)'
   > - 올바르지 않은 입력값에 대해 오류 문구를 보여줍니다.
   > - 3자리 숫자가 정답과 같은 경우 게임이 종료됩니다.
 
@@ -22,7 +22,8 @@
   > - 프로그램을 시작할 때 안내 문구를 보여줍니다.
   > - 1번 게임 시작하기를 선택하는 경우 게임이 진행됩니다.
 >   - 정답을 맞히고 게임을 다시 하지 않는다면 프로그램 시작과 같은 안내 문구를 보여줍니다.
-  > - 2번 게임 종료하기를 선택하는 경우 게임이 종료됩니다.
+  > - 2번 게임 기록 보기를 선택하는 경우 게임의 진행 기록으로 보여줍니다.
+  > - 3번 게임 종료하기를 선택하는 경우 게임이 종료됩니다.
   > - 이외의 입력값에 대해서는 오류 메시지를 보여줍니다. 
 
    **2번 - 임의의 숫자**
@@ -41,21 +42,22 @@
 
 main.kt의 함수는 `main()`, `endGame()`으로 이루어져 있습니다.
 
-BullsAndCows.kt의 StartGame()클래스 내에 함수는 `getMenu()`, `randomInt()`, `startGame()`으로 이루어져 있습니다. <br/>
+BullsAndCows.kt의 BullsAndCows()클래스 내에 함수는 `getMenu()`, `randomInt()`, `bullsAndCows()`, `checkInput()`, `history()`, `endGame()`으로 이루어져 있습니다. <br/>
 
-그중 게임에 주요한 역할을 맡고 있는 `getMenu()`, `randomInt()`, `startGame()`에 대한 설명입니다. <br/>
+그중 게임에 주요한 역할을 맡고 있는 `getMenu()`, `randomInt()`, `bullsAndCows()`에 대한 설명입니다. <br/>
 
 - `getMenu()` : 프로그램이 시작되면 처음으로 만날 수 있는 게임 시작화면 코드를 담고 있습니다.
 
 ``` Kotlin
         println("환영합니다! 원하시는 번호를 입력해주세요!")
-        println("1. 게임 시작하기 | 2. 게임 종료하기")
+        println("1. 게임 시작하기 | 2. 게임 기록 보기 | 3. 게임 종료하기")
         print(": ")
         val userInput = readln().toInt()
 
         when (userInput) {
-            1 -> startGame()
-            2 -> endGame()
+            1 -> bullsAndCows()
+            2 -> history()
+            3 -> endGame()
         }
 ```
 
@@ -82,39 +84,64 @@ BullsAndCows.kt의 StartGame()클래스 내에 함수는 `getMenu()`, `randomInt
 ..
             println("숫자를 입력하세요")
             print(": ")
-            val inputAnswer = readln().toList()
-            if (inputAnswer.size > 3) {
+            try {
+                val inputAnswer = readln().toList()
+                inputAnswer.toList()
+                    .map { it.digitToInt() }
+                    .also { if (!this.checkInput(it)) throw RuntimeException() }
+
+                if (inputAnswer.size > 3) {
+                    println("올바르지 않은 입력값입니다")
+                    i--
+                    continue
+                }
+
 // 2번
 ..
-              if (inputAnswer == correctAnswer) {
-                i -= 1
-                println()
-                println("$answer 정답입니다. (${i}회 시도)")
-                array[a] = "$i"
-// 3번
-..
-                  } else {
+                if (inputAnswer == correctAnswer) {
                     i -= 1
                     println()
-                    println("게임 오버!")
-                    println("정답은? : $correctAnswer")
+                    println("$answer 정답입니다. (${i}회 시도)")
                     array[a] = "$i"
                     a++
                     break
                 }
+// 3번
+..
+                  else {
+                    if (i < 10) {
+                        correctAnswer.forEachIndexed { index, count ->
+                            val point = inputAnswer.indexOf(count)
+                            when {
+                                point == index -> ++score[0]
+                                point != -1 -> ++score[1]
+                                else -> ++score[2]
+                            }
+                        }
+                        println("${score[0]} 스트라이크 | ${score[1]} 볼 | ${score[2]} Noting")
+                        continue
+                    } else {
+                        i -= 1
+                        println()
+                        println("게임 오버!")
+                        println("정답은? : $correctAnswer")
+                        array[a] = "$i"
+                        a++
+                        break
+                    }
 ```
 
 ## 구현 화면
 
 1. 프로그램 시작 시 화면
     - 프로그램이 시작되면 게임이 시작된다는 문장과 함께 메뉴가 출력됩니다.
-    - '1'을 입력하면 게임 시작, '2'를 입력하면 게임 종료 동작을 합니다.
+    - '1'을 입력하면 게임 시작, '2'를 입력하면 게임 기록보기, '3'을 입력하면 게임 종료를 합니다.
 
 ``` Kotlin
 환영합니다! 원하시는 번호를 입력해주세요!
-1. 게임 시작하기 | 2. 게임 종료하기
+1. 게임 시작하기 | 2. 게임 기록 보기 | 3. 게임 종료하기
 :
-// '1' 입력 시 게임시작, '2' 입력 시 게임 종료
+// '1' 입력 시 게임시작, '2' 입력 시 게임 기록 확인, '3' 입력 시 게임 종료
 ```
 
 2. 게임 플레이 화면
@@ -123,8 +150,8 @@ BullsAndCows.kt의 StartGame()클래스 내에 함수는 `getMenu()`, `randomInt
     - 9회 동안 '스트라이크|볼|아웃'에 해당하는 힌트를 받으며 정답을 찾습니다.
     - 정답을 맞히게 되면 정답 숫자와 사용자의 시도 횟수를 출력합니다
     - 9번의 시도에도 정답을 맞히지 못하면 게임 오버와 함께 정답 숫자를 출력합니다.
-    - 사용자는 게임 재시작 또는 종료 및 기록 보기를 선택할 수 있습니다.
-    - 게임 종료 및 기록 보기를 선택하면 게임 기록이 보여지며 메인 메뉴로 넘어가게 됩니다.
+    - 사용자는 게임 재시작 또는 종료를 선택할 수 있습니다.
+    - 게임 종료를 선택하면 메인 메뉴로 넘어가게 됩니다.
 
 ``` Kotlin
 < 게임을 시작합니다 >
@@ -144,16 +171,22 @@ BullsAndCows.kt의 StartGame()클래스 내에 함수는 `getMenu()`, `randomInt
 
 게임을 계속 할까요? ('1' : Yes / '2' : No - 기록 보기)
 // '1' 입력 시 게임 재시작, '2' 입력시 게임 종료 및 기록보기
+```
 
+3. 게임 기록 화면
+    - 게임의 한 횟수와 한 게임당 시도했던 횟수를 보여줍니다.
+``` Kotlin
 < 게임 기록 보기 >
 0 번째 게임 , 시도 횟수 : 0
 0 번째 게임 , 시도 횟수 : 0
-
-< 숫자 야구 게임을 종료합니다 >
-// '2' 입력 시 게임 기록 보기 및 게임 종료 출력
-
 ```
 
+4. 게임 종료 화면
+    - 게임의 종료 문구와 함께 프로그램이 종료됩니다.
+``` Kotlin
+< 숫자 야구 게임을 종료합니다 >
+```
+   
 ## 환경 설정<br>
 Language : Kotlin<br/>
 IDLE : IntelliJ IDEA Ultimate<br/>
