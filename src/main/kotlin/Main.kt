@@ -1,19 +1,14 @@
 package org.example
 
 fun main() {
-    var isValid = false
+    var isValidMenu = false
 
-    while (!isValid) {
+    while (!isValidMenu) {
         try {
-            StartGame().getMenu()
-            isValid = true
+            BullsAndCows().getMenu()
+            isValidMenu = true
         } catch (e: Exception) {
-            isValid = false
+            isValidMenu = false
         }
     }
-}
-
-fun endGame() {
-    println("< 숫자 야구 게임을 종료합니다 >")
-    return
 }
