@@ -44,7 +44,7 @@ class BullsAndCows (val size: Int = 3) {
         val answer = randomInt()
         println()
         println("< 게임을 시작합니다 >")
-        println(answer) // 테스트용 정답코드 출력
+        // println(answer) // 테스트용 정답코드 출력
         val correctAnswer = answer.toString().toList().filter { it.isDigit() }
         while (i <= 9) {
             i++
@@ -127,7 +127,7 @@ class BullsAndCows (val size: Int = 3) {
     private fun history() {
 
         println("\n< 게임 기록 보기 >")
-        for (trying in 1..5) {
+        for (trying in 1..9) {
             val record: String = records[trying]
             if (record != " ") {
                 println("$trying 번째 게임 , 시도 횟수 : $record")
